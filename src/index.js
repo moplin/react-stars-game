@@ -15,7 +15,7 @@ const StarMatch = () => {
       <div className="body">
         <div className="left">
 
-          {util.range(1, stars).map(starId =>
+          {utils.range(1, stars).map(starId =>
             <div className="star" />
           )}
 
