@@ -1,6 +1,5 @@
 import React, { Component, useState } from "react";
 import { render } from "react-dom";
-import Hello from "./Hello";
 import "./style.css";
 
 const StarsDisplay = (props) => (
@@ -23,39 +22,41 @@ const PlayNumber = (props) => (
 
 const StarMatch = () => {
   const [stars, setStars] = useState(utils.random(1, 9));
-  const [availableNumbers, setAvailableNumbers] = useState(utils.range(1, 9));
-  const [candidateNums, setcandidateNums] = useState([]);
+  const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
+  const [candidateNums, setCandidateNums] = useState([]);
 
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
 
-  const numberStatus = (number) => {
-    if (!availableNumbers.includes(number)) {
+  const numberStatus = number => {
+    if (!availableNums.includes(number)) {
       return "used";
     }
     if (candidateNums.includes(number)) {
-      return candidatesAreWrong ? "candidate" : "wrong";
+      return candidatesAreWrong ? 'wrong' : 'candidate';
     }
     return "available";
   };
 
   const onNumberClicked = (number, currentStatus) => {
-    if (currentStatus == 'used') {
+    if (currentStatus == "used") {
       return;
     }
 
-    const newCandidatesNums = candidateNums.concat(number);
+    const newCandidatesNums =
+      currentStatus === "available"
+        ? candidateNums.concat(number)
+        : candidateNums.filter((cn) => cn !== number);
 
-    if (utils.sum(newCandidatesNums) !== stars){
-        setcandidateNums(newCandidatesNums);
+    if (utils.sum(newCandidatesNums) !== stars) {
+      setCandidateNums(newCandidatesNums);
     } else {
-      const newAvailableNums = availableNumbers.filter(
-        n=> !newCandidatesNums.includes(n)
+      const newAvailableNums = availableNums.filter(
+        (n) => !newCandidatesNums.includes(n)
       );
-      setStars(utils.randomSumIn(newAvailableNums, 9))
-      setAvailableNumbers(newAvailableNums);
-      setcandidateNums([]);
+      setStars(utils.randomSumIn(newAvailableNums, 9));
+      setAvailableNums(newAvailableNums);
+      setCandidateNums([]);
     }
-
   };
 
   return (
@@ -120,18 +121,5 @@ const utils = {
     return sums[utils.random(0, sums.length - 1)];
   },
 };
-
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      name: "React",
-    };
-  }
-
-  render() {
-    return <StarMatch />;
-  }
-}
 
 render(<StarMatch />, document.getElementById("root"));
